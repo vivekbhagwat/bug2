@@ -1,4 +1,4 @@
-function wall_follower(serPort, q_hit, q_goal)
+function return_list = wall_follower(serPort, q_hit, q_goal)
 %should return current_position array [x,y,theta]
 %returns false if reaches where it was before.
 
@@ -133,4 +133,4 @@ SetFwdVelRadiusRoomba(serPort, 0, inf);
 display('Finished: back at starting point');
 pause(5);
 
-return [x,y,angle]
+return_list = [x,y,angle];
