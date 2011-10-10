@@ -1,5 +1,6 @@
 function wall_follower(serPort, q_hit, q_goal)
-%should return current_position array [x,y]
+%should return current_position array [x,y,theta]
+%returns false if reaches where it was before.
 
 % First assignment
 
@@ -40,24 +41,34 @@ SetFwdVelRadiusRoomba(serPort, 0, inf);
 % this is nowhere near perfect, but it should give a reasonable approx
 DistanceSensorRoomba(serPort);
 AngleSensorRoomba(serPort);
-angle = 0;
-x = 0;
-y = 0;
+
+origin_x = q_hit[1];
+origin_y = q_hit[2];
+origin_angle = q_hit[3];
+
+x = origin_x
+y = origin_y
+angle = origin_angle
+
+%angle = 0
+
 ret = 0; % if we've moved far enough away
-while(not(sqrt(x*x+y*y) < thresh && ret==1))    
-    display(sprintf('<x:%f y:%f>', x,y));
+%while(not(sqrt((origin_x^2)+(origin_y^2)) < thresh && ret==1))    
+BOOL = true
+while(BOOL) 
+   display(sprintf('<x:%f y:%f> - <origin_x: %f origin_y:%f>', x,y, origin_x, origin_y));
     [br,bl, wr,wl,wc, bf] = BumpsWheelDropsSensorsRoomba(serPort);
     
     % turn until not bumping wall
     % always turn counter-clockwise
-    while(bf==1 || br==1 || bl ==1 && not(sqrt(x*x+y*y) < thresh && ret==1))
+    while(bf==1 || br==1 || bl ==1 && not(dist([x,y],[origin_x,origin_y]) < thresh && ret==1))
         if (wr || wl || wc)
             break;
         end
         % check if we've returned
-        if(sqrt(x*x+y*y) < thresh && ret==1)
+        if(dist([x,y],[origin_x,origin_y]) < thresh && ret==1)
             continue;
-        elseif(sqrt(x*x+y*y) > 2*thresh && ret==0)
+        elseif(dist([x,y],[origin_x,origin_y]) > 2*thresh && ret==0)
             ret = 1;
         end
         
@@ -71,17 +82,17 @@ while(not(sqrt(x*x+y*y) < thresh && ret==1))
     end
     
     % move, turn (clockwise) until touch the wall again
-    while(bf==0 && br==0 && bl==0 && not(sqrt(x*x+y*y) < thresh && ret==1))
+    while(bf==0 && br==0 && bl==0 && BOOL)
         if (wr == 1 || wl == 1 || wc == 1)
             break;
         end
         
-        display(sprintf('<(2) %f>', sqrt(x*x+y*y)));
+        display(sprintf('<(2) %f>', dist([x,y],[origin_x,origin_y])));
         
         % check if we've returned
-        if(sqrt(x*x+y*y) < thresh && ret==1)
+        if(dist([x,y],[origin_x,origin_y]) < thresh && ret==1)
             continue;
-        elseif(sqrt(x*x+y*y) > 2*thresh && ret==0)
+        elseif(dist([x,y],[origin_x,origin_y]) > 2*thresh && ret==0)
             ret = 1;
         end
         
@@ -118,4 +129,4 @@ SetFwdVelRadiusRoomba(serPort, 0, inf);
 display('Finished: back at starting point');
 pause(5);
 
-
+return [x,y,angle]
