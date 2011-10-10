@@ -39,7 +39,7 @@ while(1)
         d = DistanceSensorRoomba(serPort);
         pos(1) = pos(1) + d;
         % draw current location
-        plot(plot(1), plot(2), 'o');
+        plot(pos(1), pos(2), 'o');
     end
     SetFwdVelRadiusRoomba(serPort, 0, inf);
     % check if close to goal
@@ -54,7 +54,7 @@ while(1)
         disp('Goal reached');
         break
     end
-    plot(plot(1), plot(2), 'o');
+    plot(pos(1), pos(2), 'o');
 
     % wall follow
     pos = wall_follower(serPort, pos, goal);
@@ -68,7 +68,7 @@ while(1)
         break
     end
     % draw location
-    plot(plot(1), plot(2), 'o');
+    plot(pos(1), pos(2), 'o');
 end
 
 end
