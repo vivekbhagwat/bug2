@@ -42,31 +42,35 @@ SetFwdVelRadiusRoomba(serPort, 0, inf);
 DistanceSensorRoomba(serPort);
 AngleSensorRoomba(serPort);
 
-origin_x = q_hit[1];
-origin_y = q_hit[2];
-origin_angle = q_hit[3];
+origin_x = q_hit(1);
+origin_y = q_hit(2);
+origin_angle = q_hit(3);
 
-x = origin_x
-y = origin_y
-angle = origin_angle
+goal_x = q_goal(1);
+goal_y = q_goal(2);
+
+x = origin_x;
+y = origin_y;
+angle = origin_angle;
 
 %angle = 0
 
 ret = 0; % if we've moved far enough away
-%while(not(sqrt((origin_x^2)+(origin_y^2)) < thresh && ret==1))    
-BOOL = true
-while(BOOL) 
-   display(sprintf('<x:%f y:%f> - <origin_x: %f origin_y:%f>', x,y, origin_x, origin_y));
+%while(not(sqrt((origin_x^2)+(origin_y^2)) < thresh && ret==1))
+
+BOOL = true;
+while(not(dist_point_to_line([x,y],[origin_x,origin_y],[goal_x,goal_y]) < thresh && ret == 1)) 
+   display(sprintf('<x:%f y:%f> - <hit_x: %f hit_y:%f>', x,y, origin_x, origin_y));
     [br,bl, wr,wl,wc, bf] = BumpsWheelDropsSensorsRoomba(serPort);
     
     % turn until not bumping wall
     % always turn counter-clockwise
-    while(bf==1 || br==1 || bl ==1 && not(dist([x,y],[origin_x,origin_y]) < thresh && ret==1))
+    while(bf==1 || br==1 || bl ==1 && not(dist_point_to_line([x,y],[origin_x,origin_y],[goal_x,goal_y]) < thresh && ret==1))
         if (wr || wl || wc)
             break;
         end
         % check if we've returned
-        if(dist([x,y],[origin_x,origin_y]) < thresh && ret==1)
+        if(dist_point_to_line([x,y],[origin_x,origin_y],[goal_x,goal_y]) < thresh && ret==1)
             continue;
         elseif(dist([x,y],[origin_x,origin_y]) > 2*thresh && ret==0)
             ret = 1;
@@ -90,7 +94,7 @@ while(BOOL)
         display(sprintf('<(2) %f>', dist([x,y],[origin_x,origin_y])));
         
         % check if we've returned
-        if(dist([x,y],[origin_x,origin_y]) < thresh && ret==1)
+        if(dist_point_to_line([x,y],[origin_x,origin_y],[goal_x,goal_y]) < thresh && ret==1)
             continue;
         elseif(dist([x,y],[origin_x,origin_y]) > 2*thresh && ret==0)
             ret = 1;
