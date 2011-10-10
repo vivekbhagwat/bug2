@@ -28,9 +28,8 @@ while(1)
         hit = (bf==1 || br==1 || bl==1);
         d = DistanceSensorRoomba(serPort);
         pos(1) = pos(1) + d;
-        plot(plot(1), plot(2), 'o');
+        
     end
-    % comments
     if(dist(pos, goal)< error)
         disp('Goal reached');
         break
@@ -38,13 +37,7 @@ while(1)
     SetFwdVelRadiusRoomba(serPort, 0, inf);
     d = DistanceSensorRoomba(serPort);
     pos(1) = pos(1) + d;
-    if(dist(pos, goal)< error)
-        disp('Goal reached');
-        break
-    end
-    plot(plot(1), plot(2), 'o');
-
-    % wall follow
+        
     pos = wallfollower(pos, goal);
     if(pos == false)
         disp('Cannot reach goal');
@@ -53,7 +46,6 @@ while(1)
         disp('Goal reached');
         break
     end
-    plot(plot(1), plot(2), 'o');
 end
 
 end
