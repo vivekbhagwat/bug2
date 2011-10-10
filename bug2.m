@@ -57,7 +57,7 @@ while(1)
     plot(plot(1), plot(2), 'o');
 
     % wall follow
-    pos = wall_follower(pos, goal);
+    pos = wall_follower(serPort, pos, goal);
     % assume we aren't blocked
     % check if we can reach the goal, or whether we reached the goal
     if(pos == false)
