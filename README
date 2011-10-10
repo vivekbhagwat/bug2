@@ -1,0 +1,4 @@
+Implement a BUG2 algorithm to move the create from a designated starting point to a goal point in an environment.
+Your robot should start out along the straight line path from start to goal (the M Line). If it hits any obstacles along
+the way, it will invoke a wall following behavior until the M Line is reacquired and the robot again starts out for the
+goal point along the M Line. When goal point is reached, robot will stop.
