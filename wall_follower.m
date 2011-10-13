@@ -10,19 +10,19 @@ function return_list = wall_follower(serPort, q_hit, q_goal)
 d = 0.05;
 ds = 2;
 % angle in degrees
-th = 3;
+th = 4;
 ths = 2; % how fast to turn
 
 % time delays
 td = 0.5;
-tdd = 0.5;
+tdd = 0.2;
 
 % speed
 % ts = 0.08;
-ts = 0.5;
+ts = 0.2;
 gs = 0.2;
 
-thresh = 0.1; % how far away you need to move before returning
+thresh = 0.05; % how far away you need to move before returning
 
 % update
 [br,bl, wr,wl,wc, bf] = BumpsWheelDropsSensorsRoomba(serPort);
@@ -105,6 +105,7 @@ while(not(dist_point_to_line([x,y],[origin_x,origin_y],[goal_x,goal_y]) < thresh
         
         % check if we've returned
         if(dist_point_to_line([x,y],[origin_x,origin_y],[goal_x,goal_y]) < thresh && ret==1)
+            BOOL = false;
             continue;
         elseif(dist([x,y],[origin_x,origin_y]) > 2*thresh && ret==0)
             ret = 1;
@@ -118,7 +119,7 @@ while(not(dist_point_to_line([x,y],[origin_x,origin_y],[goal_x,goal_y]) < thresh
         % update distance traveled
         b = DistanceSensorRoomba(serPort);
         a = AngleSensorRoomba(serPort);
-        angle = angle + 2.0*a;
+        angle = angle + 1.5*a;
         x = x + b*cos(angle);
         y = y + b*sin(angle);
         % check if we've hit
