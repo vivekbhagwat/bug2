@@ -15,6 +15,7 @@ pos = [0,0,0]; % [x,y,theta]
 % drawing initialization
 figure(1) % set the active figure handle to figure 1
 clf; % clear figure 1
+axis([0 10 -5 5]);
 hold on; %Set figure 1 not to clear itself on each call to plot
 
 while(1)

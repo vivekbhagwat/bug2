@@ -2,42 +2,22 @@ function return_list = wall_follower(serPort, q_hit, q_goal)
 %should return current_position array [x,y,theta]
 %returns false if reaches where it was before.
 
-% First assignment
-
-% serPort = RoombaInit(comPort);
-
-% distances in meters, and speed
-d = 0.05;
-ds = 2;
-% angle in degrees
-th = 4;
-ths = 2; % how fast to turn
+% angle in degrees to turn
+th = 5;
 
 % time delays
-td = 0.5;
-tdd = 0.2;
+tdd = 0.5;
 
 % speed
-% ts = 0.08;
-ts = 0.2;
-gs = 0.2;
+ts = 0.2; % turning speed
+gs = 0.2; % general speed
 
 corrective = 1.5; % how much to fix the angle deltas by
+corrective2 = 1.0; % how much to fix, when bumping into wall
 
 thresh = 0.05; % how far away you need to move before returning
 
-% update
-[br,bl, wr,wl,wc, bf] = BumpsWheelDropsSensorsRoomba(serPort);
-
-% first, go forward until run into a wall
-SetFwdVelRadiusRoomba(serPort, gs, inf);
-while(bf==0 && br==0 && bl==0)
-    pause(td);
-    [br,bl, wr,wl,wc, bf] = BumpsWheelDropsSensorsRoomba(serPort);
-end
-SetFwdVelRadiusRoomba(serPort, 0, inf);
-
-%pause();
+% Assume we're already touching the object
 
 % have to keep track of where it started
 % this is nowhere near perfect, but it should give a reasonable approx
@@ -55,12 +35,9 @@ x = origin_x;
 y = origin_y;
 angle = origin_angle;
 
-%angle = 0
-
 ret = 0; % if we've moved far enough away
-%while(not(sqrt((origin_x^2)+(origin_y^2)) < thresh && ret==1))
 
-BOOL = true;
+BOOL = true; % check if we've touched the line
 while(not(dist_point_to_line([x,y],[origin_x,origin_y],[goal_x,goal_y]) < thresh && ret == 1)) 
     display(sprintf('<x:%f y:%f> - <hit_x: %f hit_y:%f>', x,y, origin_x, origin_y));
     plot(x, y, 'o');
@@ -88,14 +65,15 @@ while(not(dist_point_to_line([x,y],[origin_x,origin_y],[goal_x,goal_y]) < thresh
             turnAngle(serPort, ts, th/2);
         end
         a = AngleSensorRoomba(serPort);
-        angle = angle + a;
+        angle = angle + corrective2*a;
         [br,bl, wr,wl,wc, bf] = BumpsWheelDropsSensorsRoomba(serPort);
     end
     a = AngleSensorRoomba(serPort);
-    angle = angle + a;
+    angle = angle + corrective2*a;
 
     
     % move, turn (clockwise) until touch the wall again
+    i = 0;
     while(bf==0 && br==0 && bl==0 && BOOL)
         if (wr == 1 || wl == 1 || wc == 1)
             break;
@@ -114,7 +92,6 @@ while(not(dist_point_to_line([x,y],[origin_x,origin_y],[goal_x,goal_y]) < thresh
         end
         
         % not using travelDist because it gets stuck in corners
-        i = 0;
         SetFwdVelRadiusRoomba(serPort, gs, inf);
         pause(tdd);
         SetFwdVelRadiusRoomba(serPort, 0, inf);
@@ -127,10 +104,14 @@ while(not(dist_point_to_line([x,y],[origin_x,origin_y],[goal_x,goal_y]) < thresh
         % check if we've hit
         [br,bl, wr,wl,wc, bf] = BumpsWheelDropsSensorsRoomba(serPort);
         if(bf==0 && br==0 && bl==0)
-            turnAngle(serPort,  ts, -th);
+            turnAngle(serPort,  ts, -th*(1+i*0.1));
+            i = i+1;
             [br,bl, wr,wl,wc, bf] = BumpsWheelDropsSensorsRoomba(serPort);
         end
     end
+    
+    a = AngleSensorRoomba(serPort);
+    angle = angle + corrective*a;
     
     if (wr == 1 || wl == 1 || wc == 1)
         break;
