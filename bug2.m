@@ -5,7 +5,7 @@ function [ ] = bug2( serPort )
 
 td = 0.1; % time delta to wait
 fs = 0.1; % forward speed
-as = 0.05; % angle speed (0, 0.2 m/s)
+as = 0.2; % angle speed (0, 0.2 m/s)
 goalError = 0.5; % distance from goal to hit
 angleError = 0.1; % radians, before we start going towards goal
 

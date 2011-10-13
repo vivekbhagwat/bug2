@@ -60,7 +60,8 @@ ret = 0; % if we've moved far enough away
 
 BOOL = true;
 while(not(dist_point_to_line([x,y],[origin_x,origin_y],[goal_x,goal_y]) < thresh && ret == 1)) 
-   display(sprintf('<x:%f y:%f> - <hit_x: %f hit_y:%f>', x,y, origin_x, origin_y));
+    display(sprintf('<x:%f y:%f> - <hit_x: %f hit_y:%f>', x,y, origin_x, origin_y));
+    plot(x, y, 'o');
     [br,bl, wr,wl,wc, bf] = BumpsWheelDropsSensorsRoomba(serPort);
     
     % turn until not bumping wall
@@ -92,6 +93,7 @@ while(not(dist_point_to_line([x,y],[origin_x,origin_y],[goal_x,goal_y]) < thresh
         end
         
         display(sprintf('<(2) %f>', dist([x,y],[origin_x,origin_y])));
+        plot(x, y, 'o');
         
         % check if we've returned
         if(dist_point_to_line([x,y],[origin_x,origin_y],[goal_x,goal_y]) < thresh && ret==1)
@@ -131,6 +133,6 @@ end
 SetFwdVelRadiusRoomba(serPort, 0, inf);
 
 display('Finished: back at starting point');
-pause(5);
+pause(1);
 
 return_list = [x,y,angle];
