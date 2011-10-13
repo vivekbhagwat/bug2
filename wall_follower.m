@@ -9,7 +9,11 @@ th = 5;
 tdd = 0.5;
 
 % speed
-ts = 0.2; % turning speed
+if isSimulator(serPort)
+    ts = 0.2; % turning speed
+else
+    ts = 0.02;
+end
 gs = 0.2; % general speed
 
 corrective = 1;%.5; % how much to fix the angle deltas by

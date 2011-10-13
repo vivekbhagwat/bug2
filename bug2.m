@@ -35,7 +35,10 @@ while(1)
         % go for a little while
         pause(td);
         % poll the bumpers
-        [br,bl, ~,~,~, bf] = BumpsWheelDropsSensorsRoomba(serPort);
+        [br,bl, wr,wl,wc, bf] = BumpsWheelDropsSensorsRoomba(serPort);
+        if (wr == 1 || wl == 1 || wc == 1)
+            break;
+        end
         hit = (bf==1 || br==1 || bl==1);
         d = DistanceSensorRoomba(serPort);
         pos(1) = pos(1) + d;
