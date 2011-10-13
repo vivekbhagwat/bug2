@@ -12,7 +12,7 @@ tdd = 0.5;
 ts = 0.2; % turning speed
 gs = 0.2; % general speed
 
-corrective = 1.5; % how much to fix the angle deltas by
+corrective = 1;%.5; % how much to fix the angle deltas by
 corrective2 = 1.0; % how much to fix, when bumping into wall
 
 thresh = 0.05; % how far away you need to move before returning
@@ -105,7 +105,7 @@ while(not(dist_point_to_line([x,y],[origin_x,origin_y],[goal_x,goal_y]) < thresh
         [br,bl, wr,wl,wc, bf] = BumpsWheelDropsSensorsRoomba(serPort);
         if(bf==0 && br==0 && bl==0)
             turnAngle(serPort,  ts, -th*(1+i*0.1));
-            i = i+1;
+%             i = i+1;
             [br,bl, wr,wl,wc, bf] = BumpsWheelDropsSensorsRoomba(serPort);
         end
     end
