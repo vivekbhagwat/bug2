@@ -22,7 +22,7 @@ tdd = 0.5;
 ts = 0.5;
 gs = 0.2;
 
-thresh = 0.4; % how far away you need to move before returning
+thresh = 0.1; % how far away you need to move before returning
 
 % update
 [br,bl, wr,wl,wc, bf] = BumpsWheelDropsSensorsRoomba(serPort);
@@ -117,7 +117,7 @@ while(not(dist_point_to_line([x,y],[origin_x,origin_y],[goal_x,goal_y]) < thresh
         % update distance traveled
         b = DistanceSensorRoomba(serPort);
         a = AngleSensorRoomba(serPort);
-        angle = angle + a;
+        angle = angle + 2.0*a;
         x = x + b*cos(angle);
         y = y + b*sin(angle);
         % check if we've hit
