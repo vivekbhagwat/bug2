@@ -12,7 +12,7 @@ tdd = 0.5;
 if isSimulator(serPort)
     ts = 0.2; % turning speed
 else
-    ts = 0.02;
+    ts = 0.06;
 end
 gs = 0.2; % general speed
 
