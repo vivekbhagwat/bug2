@@ -66,6 +66,8 @@ while(not(dist_point_to_line([x,y],[origin_x,origin_y],[goal_x,goal_y]) < thresh
     
     % turn until not bumping wall
     % always turn counter-clockwise
+    
+    AngleSensorRoomba(serPort);
     while(bf==1 || br==1 || bl ==1 && not(dist_point_to_line([x,y],[origin_x,origin_y],[goal_x,goal_y]) < thresh && ret==1))
         if (wr || wl || wc)
             break;
@@ -76,15 +78,20 @@ while(not(dist_point_to_line([x,y],[origin_x,origin_y],[goal_x,goal_y]) < thresh
         elseif(dist([x,y],[origin_x,origin_y]) > 2*thresh && ret==0)
             ret = 1;
         end
-        
+
         % retain finer resolution when not head-on
         if(bf==1)
             turnAngle(serPort, ts, th);
         else
             turnAngle(serPort, ts, th/2);
         end
+        a = AngleSensorRoomba(serPort);
+        angle = a + angle;
         [br,bl, wr,wl,wc, bf] = BumpsWheelDropsSensorsRoomba(serPort);
     end
+    a = AngleSensorRoomba(serPort);
+    angle = a + angle;
+
     
     % move, turn (clockwise) until touch the wall again
     while(bf==0 && br==0 && bl==0 && BOOL)
