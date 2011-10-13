@@ -22,6 +22,8 @@ tdd = 0.2;
 ts = 0.2;
 gs = 0.2;
 
+corrective = 1.5; % how much to fix the angle deltas by
+
 thresh = 0.05; % how far away you need to move before returning
 
 % update
@@ -86,11 +88,11 @@ while(not(dist_point_to_line([x,y],[origin_x,origin_y],[goal_x,goal_y]) < thresh
             turnAngle(serPort, ts, th/2);
         end
         a = AngleSensorRoomba(serPort);
-        angle = a + angle;
+        angle = angle + a;
         [br,bl, wr,wl,wc, bf] = BumpsWheelDropsSensorsRoomba(serPort);
     end
     a = AngleSensorRoomba(serPort);
-    angle = a + angle;
+    angle = angle + a;
 
     
     % move, turn (clockwise) until touch the wall again
@@ -119,7 +121,7 @@ while(not(dist_point_to_line([x,y],[origin_x,origin_y],[goal_x,goal_y]) < thresh
         % update distance traveled
         b = DistanceSensorRoomba(serPort);
         a = AngleSensorRoomba(serPort);
-        angle = angle + 1.5*a;
+        angle = angle + corrective*a;
         x = x + b*cos(angle);
         y = y + b*sin(angle);
         % check if we've hit
