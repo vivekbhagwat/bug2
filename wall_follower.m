@@ -100,6 +100,7 @@ while(not(dist_point_to_line([x,y],[origin_x,origin_y],[goal_x,goal_y]) < thresh
         end
         
         display(sprintf('<(2) %f>', dist([x,y],[origin_x,origin_y])));
+        display(sprintf('<(3) %f>', dist_point_to_line([x,y],[origin_x,origin_y],[goal_x,goal_y])));
         plot(x, y, 'o');
         
         % check if we've returned
