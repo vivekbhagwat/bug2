@@ -10,14 +10,16 @@ tdd = 0.5;
 
 % speed
 if isSimulator(serPort)
+    gs = 0.2; % general speed
     ts = 0.2; % turning speed
+    corrective = 1.0 ;%.5; % how much to fix the angle deltas by
+    corrective2 = 1.0; % how much to fix, when bumping into wall
 else
+    gs = 0.1;
     ts = 0.02;
+    corrective = 2.0; 
+    corrective2 = 2.0; 
 end
-gs = 0.2; % general speed
-
-corrective = 1;%.5; % how much to fix the angle deltas by
-corrective2 = 1.0; % how much to fix, when bumping into wall
 
 thresh = 0.05; % how far away you need to move before returning
 
