@@ -16,9 +16,9 @@ if isSimulator(serPort)
 else
     tdd = 0.01;
     gs = 0.1;
-    ts = 0.02;
-    corrective = 1.5; 
-    corrective2 = 1.5; 
+    ts = 0.05;
+    corrective = 2.0; 
+    corrective2 = 2.0; 
 end
 
 thresh = 0.05; % how far away you need to move before returning
