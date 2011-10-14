@@ -4,18 +4,18 @@ function [ ] = bug2( serPort )
 %   ex. serPort = RoombaInit(comPort);
 
 goalError = 0.2; % distance from goal to hit
-angleError = 0.1; % radians, before we start going towards goal
+angleError = 0.05; % radians, before we start going towards goal
 
 if isSimulator(serPort)
     td = 0.1; % time delta to wait
-    fs = 0.1; % forward speed
+    fs = 0.2; % forward speed
     as = 0.2; % angle speed (0, 0.2 m/s)    
     corrective = 1.0; %.5; % how much to fix the angle deltas by
 else
-    td = 0.01;
+    td = 0.0;
     fs = 0.1;
-    as = 0.05;
-    corrective = 1.5; 
+    as = 0.08;
+    corrective = 1.4; 
 end
 
 goal = [10, 0]; % assume goal is 10 meters in front of robot
@@ -33,10 +33,21 @@ while(1)
     while(abs(pos(3)) > angleError)
         turnAngle(serPort, as, -pos(3)/4);
         pos(3) = pos(3) + corrective*AngleSensorRoomba(serPort);
+        % make sure we're not picked up
+        [~,~, wr,wl,wc, ~] = BumpsWheelDropsSensorsRoomba(serPort);
+        if (wr == 1 || wl == 1 || wc == 1)
+            SetFwdVelRadiusRoomba(serPort, 0, 0);
+            return;
+        end
     end
     
     DistanceSensorRoomba(serPort); % clear distance
-    [br,bl, ~,~,~, bf] = BumpsWheelDropsSensorsRoomba(serPort);
+    [br,bl, wr,wl,wc, bf] = BumpsWheelDropsSensorsRoomba(serPort);
+    % make sure we're not picked up
+    if (wr == 1 || wl == 1 || wc == 1)
+        SetFwdVelRadiusRoomba(serPort, 0, 0);
+        return;
+    end
     hit = (bf==1 || br==1 || bl==1);
     % move towards goal
     SetFwdVelRadiusRoomba(serPort, fs, inf);
@@ -51,6 +62,15 @@ while(1)
             return;
         end
         hit = (bf==1 || br==1 || bl==1);
+        % analog read still seems to be broken in simulator
+        if not(isSimulator(serPort))
+            % see if we're near a wall: if so, go slower
+            range = AnalogWallSensorReadRoomba(serPort);
+            print(range);
+            if range<50
+                SetFwdVelRadiusRoomba(serPort, fs/2, inf);
+            end
+        end
         d = DistanceSensorRoomba(serPort);
         pos(1) = pos(1) + d;
         % draw current location

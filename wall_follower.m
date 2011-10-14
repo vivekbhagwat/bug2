@@ -2,23 +2,23 @@ function return_list = wall_follower(serPort, q_hit, q_goal)
 %should return current_position array [x,y,theta]
 %returns false if reaches where it was before.
 
-% angle in degrees to turn
-th = 5;
+vect_len = 0.3; % direction vector length
 
 % speed
 if isSimulator(serPort)
-    % time delays
-    tdd = 0.5;
+    th = 15; % angle in degrees to turn
+    tdd = 0.5; % time delays
     gs = 0.2; % general speed
     ts = 0.2; % turning speed
     corrective = 1.0 ;%.5; % how much to fix the angle deltas by
     corrective2 = 1.0; % how much to fix, when bumping into wall
 else
-    tdd = 0.01;
+    th = 5; % angle in degrees to turn
+    tdd = 0.0;
     gs = 0.1;
     ts = 0.05;
-    corrective = 2.0; 
-    corrective2 = 2.0; 
+    corrective = 1.4; 
+    corrective2 = 1.4; 
 end
 
 thresh = 0.05; % how far away you need to move before returning
@@ -47,6 +47,7 @@ BOOL = true; % check if we've touched the line
 while(not(dist_point_to_line([x,y],[origin_x,origin_y],[goal_x,goal_y]) < thresh && ret == 1)) 
     display(sprintf('<x:%f y:%f> - <hit_x: %f hit_y:%f>', x,y, origin_x, origin_y));
     plot(x, y, 'o');
+    plot([x,x+vect_len*cos(angle)], [y,y+vect_len*sin(angle)]);
     [br,bl, wr,wl,wc, bf] = BumpsWheelDropsSensorsRoomba(serPort);
     
     % turn until not bumping wall
@@ -85,9 +86,10 @@ while(not(dist_point_to_line([x,y],[origin_x,origin_y],[goal_x,goal_y]) < thresh
             break;
         end
         
-        display(sprintf('<(2) %f>', dist([x,y],[origin_x,origin_y])));
-        display(sprintf('<(3) %f>', dist_point_to_line([x,y],[origin_x,origin_y],[goal_x,goal_y])));
+        display(sprintf('<(dist traveled) %f>', dist([x,y],[origin_x,origin_y])));
+        display(sprintf('<(dist from m-line) %f>', dist_point_to_line([x,y],[origin_x,origin_y],[goal_x,goal_y])));
         plot(x, y, 'o');
+        plot([x,x+vect_len*cos(angle)], [y,y+vect_len*sin(angle)]);
         
         % check if we've returned
         if(dist_point_to_line([x,y],[origin_x,origin_y],[goal_x,goal_y]) < thresh && ret==1)
@@ -111,7 +113,6 @@ while(not(dist_point_to_line([x,y],[origin_x,origin_y],[goal_x,goal_y]) < thresh
         [br,bl, wr,wl,wc, bf] = BumpsWheelDropsSensorsRoomba(serPort);
         if(bf==0 && br==0 && bl==0)
             turnAngle(serPort,  ts, -th*(1+i*0.1));
-%             i = i+1;
             [br,bl, wr,wl,wc, bf] = BumpsWheelDropsSensorsRoomba(serPort);
         end
     end
