@@ -32,7 +32,9 @@ while(1)
     AngleSensorRoomba(serPort);
     while(abs(pos(3)) > angleError)
         turnAngle(serPort, as, -pos(3)/4);
-        pos(3) = pos(3) + corrective*AngleSensorRoomba(serPort);
+        angle = AngleSensorRoomba(serPort);
+        disp(angle);
+        pos(3) = pos(3) + corrective*angle;
     end
     
     DistanceSensorRoomba(serPort); % clear distance
