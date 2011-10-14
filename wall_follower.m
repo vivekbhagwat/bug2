@@ -5,6 +5,8 @@ function return_list = wall_follower(serPort, q_hit, q_goal)
 % angle in degrees to turn
 th = 5;
 
+vect_len = 0.3; % length of vector
+
 % speed
 if isSimulator(serPort)
     % time delays
@@ -47,6 +49,7 @@ BOOL = true; % check if we've touched the line
 while(not(dist_point_to_line([x,y],[origin_x,origin_y],[goal_x,goal_y]) < thresh && ret == 1)) 
     display(sprintf('<x:%f y:%f> - <hit_x: %f hit_y:%f>', x,y, origin_x, origin_y));
     plot(x, y, 'o');
+    plot([x,x+vect_len*cos(angle)], [y,y+vect_len*sin(angle)]);
     [br,bl, wr,wl,wc, bf] = BumpsWheelDropsSensorsRoomba(serPort);
     
     % turn until not bumping wall
@@ -88,6 +91,7 @@ while(not(dist_point_to_line([x,y],[origin_x,origin_y],[goal_x,goal_y]) < thresh
         display(sprintf('<(2) %f>', dist([x,y],[origin_x,origin_y])));
         display(sprintf('<(3) %f>', dist_point_to_line([x,y],[origin_x,origin_y],[goal_x,goal_y])));
         plot(x, y, 'o');
+        plot([x,x+vect_len*cos(angle)], [y,y+vect_len*sin(angle)]);
         
         % check if we've returned
         if(dist_point_to_line([x,y],[origin_x,origin_y],[goal_x,goal_y]) < thresh && ret==1)
