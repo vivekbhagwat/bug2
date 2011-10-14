@@ -5,20 +5,20 @@ function return_list = wall_follower(serPort, q_hit, q_goal)
 % angle in degrees to turn
 th = 5;
 
-% time delays
-tdd = 0.5;
-
 % speed
 if isSimulator(serPort)
+    % time delays
+    tdd = 0.5;
     gs = 0.2; % general speed
     ts = 0.2; % turning speed
     corrective = 1.0 ;%.5; % how much to fix the angle deltas by
     corrective2 = 1.0; % how much to fix, when bumping into wall
 else
+    tdd = 0.01;
     gs = 0.1;
     ts = 0.02;
-    corrective = 2.0; 
-    corrective2 = 2.0; 
+    corrective = 1.5; 
+    corrective2 = 1.5; 
 end
 
 thresh = 0.05; % how far away you need to move before returning

@@ -3,11 +3,20 @@ function [ ] = bug2( serPort )
 %   Expects an initialized serPort to be passed
 %   ex. serPort = RoombaInit(comPort);
 
-td = 0.1; % time delta to wait
-fs = 0.1; % forward speed
-as = 0.2; % angle speed (0, 0.2 m/s)
 goalError = 0.2; % distance from goal to hit
 angleError = 0.1; % radians, before we start going towards goal
+
+if isSimulator(serPort)
+    td = 0.1; % time delta to wait
+    fs = 0.1; % forward speed
+    as = 0.2; % angle speed (0, 0.2 m/s)    
+    corrective = 1.0; %.5; % how much to fix the angle deltas by
+else
+    td = 0.01;
+    fs = 0.1;
+    as = 0.05;
+    corrective = 1.5; 
+end
 
 goal = [10, 0]; % assume goal is 10 meters in front of robot
 pos = [0,0,0]; % [x,y,theta]
@@ -22,8 +31,8 @@ while(1)
     % turn until we are pointing towards the goal
     AngleSensorRoomba(serPort);
     while(abs(pos(3)) > angleError)
-        turnAngle(serPort, as, -pos(3)/2);
-        pos(3) = pos(3) + AngleSensorRoomba(serPort);
+        turnAngle(serPort, as, -pos(3)/4);
+        pos(3) = pos(3) + corrective*AngleSensorRoomba(serPort);
     end
     
     DistanceSensorRoomba(serPort); % clear distance
